@@ -100,47 +100,47 @@
         </div>
       
             
-            <form action="{% url 'payment_vouchers' %}" id="frmvouch" method="POST"  style="background-color:rgba(0,0,0,.4);">
-                {% csrf_token %}
-                <div class="row container-fluid center  p-2 m-0">
-                    <a href="vouchers" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
+            <form action="{% url 'credit_notess' %}" id="frmvouch" method="POST"  style="background-color:rgba(0,0,0,.4);">
+            {% csrf_token %}
+            <div class="row container-fluid center  p-2 m-0">
+                <a href="{% url 'vouchers_crd_fr' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
 
-                    <div class="col-sm-2 m-0 p-0"></div>
-                    <div class="col-sm-2 mt-3 p-0"> <label for="b" class="text-light">Name:</label></div>
-                    <div class="col-sm-5 mt-2 p-0"> 
-                       
-                        <input type="text" style="height: 20px;background-color: rgb(255, 229, 183)"
-                         name="ptype" id="ptype" class="form-control" onclick="showform()" ><br>
-                       
-                        <button class="btn btn-small ml-5 w-35 btn btn-info mt-3 text-center" data-dismiss="modal" aria-hidden="true" onclick="setDate()">Submit</button> <br>
-
-
-                    </div>
+                <div class="col-sm-2 m-0 p-0"></div>
+                <div class="col-sm-2 mt-3 p-0"> <label for="b" class="text-light">Name:</label></div>
+                <div class="col-sm-5 mt-2 p-0"> 
                     
+                    <input type="text" style="height: 20px;background-color: rgb(255, 229, 183)"
+                        name="ptype" id="ptype" class="form-control" onclick="showform()" ><br>
+                    
+                    <button class="btn btn-small ml-5 w-35 btn btn-info mt-3 text-center" data-dismiss="modal" aria-hidden="true" onclick="setDate()">Submit</button> <br>
+
+
                 </div>
+                
+            </div>
 
 
 
-                <div class="form-popup ScrollStyle" id="showForm" style="background-color: #213b52" >
-                        <h6 style="background-color:rgb(17, 169, 240) ;color:white text">List of Types</h6>
-                        <button type="button" class="btn cancel close mt-0 fa fa-times fadeOut" onclick="closeForm()"></button>
-                        <a href="vouchers" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
-                        <hr>
-                        <div>
-                            <table>
-                                <tr>
-                                                                                    
-                                    {% for i in voucher %}
-                                    <option onclick="setvalue('{{i.voucher_name}}')" class="btns_prnt">&nbsp;&nbsp;{{i.voucher_name }}</option>
-                                    <input type="hidden" name="underhidden" value="{{i.id}}">
+            <div class="form-popup ScrollStyle" id="showForm" style="background-color: #213b52" >
+                    <h6 style="background-color:rgb(17, 169, 240) ;color:white text">List of Types</h6>
+                    <button type="button" class="btn cancel close mt-0 fa fa-times fadeOut" onclick="closeForm()"></button>
+                    <a href="{% url 'vouchers_crd_fr' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
+                    <hr>
+                    <div>
+                        <table>
+                            <tr>
+                                                                                
+                                {% for i in voucher %}
+                                <option onclick="setvalue('{{i.voucher_name}}')" class="btns_prnt">&nbsp;&nbsp;{{i.voucher_name }}</option>
+                                <input type="hidden" id = 'underhidden' name="underhidden" value="{{i.id}}">
 
-                                    {% endfor %}
-                                </tr>
-                            </table>
-                        </div>
-                </div>
-                   
-                </form>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </div>
+            </div>
+                
+            </form>
             
         </div>
     </div>
@@ -152,8 +152,10 @@
 
 function setvalue(name){
     
-            document.getElementById('ptype').value= name;
-            console.log(getElementById('ptype').value);
+    document.getElementById('ptype').value= name;
+    //localStorage.setItem("type", name);
+
+    
         }
 function closeForm() {
 document.getElementById("showForm").style.display = "none";
@@ -163,4 +165,5 @@ document.getElementById('showForm').style.display= "block";
 
 }
 </script>
+
 {% endblock %}

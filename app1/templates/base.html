@@ -570,12 +570,18 @@
                             <div class="menu-title">Vouchers</div>
                         </a>
                         <ul>
-                            <li><a href=" list_payment_voucher"><i class="bx bx-right-arrow-alt"></i>Payment</a>
+                            <li><a href="list_payment_voucher"><i class="bx bx-right-arrow-alt"></i>Payment</a>
                              
                             </li>
                             
                         
                             <li><a href="list_receipt_voucher"><i class="bx bx-right-arrow-alt"></i>Receipt</a>
+                                
+                            </li>
+                            <li><a href="{% url 'list_crd_voucher'%}"><i class="bx bx-right-arrow-alt"></i>Credit Note</a>
+                                
+                            </li>
+                            <li><a href="{% url 'list_deb_voucher'%}"><i class="bx bx-right-arrow-alt"></i>Debit Note</a>
                                 
                             </li>
                             
@@ -598,6 +604,7 @@
                         </ul>
 
                     </li>
+                      
                       
                         <li>
                            

@@ -698,6 +698,14 @@ class CreateGodown(models.Model):
     alias=models.CharField(max_length=100)
     under_name=models.CharField(max_length=50)
 
+class Godown_Items(models.Model):
+    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+    name=models.CharField(max_length=100)
+    quantity=models.CharField(max_length=100,null=True)
+    rate=models.CharField(max_length=100,null=True)
+    per=models.CharField(max_length=100,null=True)
+    value=models.CharField(max_length=100,null=True)
+
 # class CreateGodown(models.Model):
 #     name=models.CharField(max_length=100)
 #     alias=models.CharField(max_length=100)
@@ -1741,9 +1749,32 @@ class fmonths(models.Model):
 
     month_name = models.CharField(max_length=50)
 
+class stock_item_voucher(models.Model):
 
     
-class stock_item_voucher(models.Model):
+    company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
+    group = models.ForeignKey(CreateStockGrp,on_delete = models.CASCADE,null = True)
+    item = models.ForeignKey(stock_itemcreation,on_delete = models.CASCADE,null = True)
+    month = models.ForeignKey(fmonths,on_delete=models.CASCADE,null = True,blank=True)
+
+    #voucher details
+    date = models.DateField(null = True)
+    #voucher_id = models.IntegerField(null=True,blank=True)
+    party_account = models.CharField(max_length=255,null=True)
+    ledger_account = models.CharField(max_length=255,null=True)
+    Voucher_type = models.CharField(max_length = 50)
+    Voucher_no = models.IntegerField(null = True,blank=True)
+    rate  = models.IntegerField(null = True,blank=True)
+    per = models.IntegerField(null = True,blank=True)
+    inwards_qty = models.IntegerField(null = True,blank=True)
+    
+    inwards_val = models.IntegerField(null = True,blank=True)
+    outwards_qty = models.IntegerField(null = True,blank=True)
+    outwards_val = models.IntegerField(null = True,blank=True)
+    closing_qty = models.IntegerField(null = True,blank=True)
+    closing_val = models.IntegerField(null = True,blank=True)
+    
+'''class stock_item_voucher(models.Model):
 
     company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
     group = models.ForeignKey(CreateStockGrp,on_delete = models.CASCADE,null = True)
@@ -1761,7 +1792,91 @@ class stock_item_voucher(models.Model):
     outwards_qty = models.IntegerField(null = True,blank=True)
     outwards_val = models.IntegerField(null = True,blank=True)
     closing_qty = models.IntegerField(null = True,blank=True)
-    closing_val = models.IntegerField(null = True,blank=True)
+    closing_val = models.IntegerField(null = True,blank=True)'''
+
+
+#saiju
+
+class credit_note(models.Model):
+
+    voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
+
+    screditid = models.AutoField(('cnid'), primary_key=True)
+    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+    credit_no = models.IntegerField(default=1)
+    customer = models.CharField(max_length=100,null=True)
+    creditdate = models.DateField(null=True)
+    ledger_acc=models.CharField(max_length=100,null=True)
+    note=models.CharField(max_length=255,null=True)
+    subtotal = models.CharField(max_length=100,null=True)
+    quantity= models.IntegerField(null=True)
+    grandtotal = models.CharField(max_length=100,null=True)
+    tracking_no=models.CharField(max_length=100,null=True)
+    dis_doc_no= models.CharField(max_length=100,null=True)
+    dis_thr= models.CharField(max_length=100,null=True)
+    destination= models.CharField(max_length=100,null=True)
+    carrie_nmag= models.CharField(max_length=100,null=True)
+    billlr_no= models.CharField(max_length=100,null=True)
+    mt_vh_no= models.CharField(max_length=100,null=True)
+    date= models.DateField(null=True)
+    inv_no= models.CharField(max_length=100,null=True)
+    inv_date= models.DateField(null=True)
+
+    mname =models.CharField(max_length=100,null=True)
+    address =models.CharField(max_length=255,null=True)
+    state =models.CharField(max_length=100,null=True)
+    country =models.CharField(max_length=100,null=True)
+    reg_type =models.CharField(max_length=100,null=True)
+    gst_uin =models.CharField(max_length=100,null=True)
+    pl_suply =models.CharField(max_length=100,null=True)
+    
+class credit_item(models.Model):
+    scredit = models.ForeignKey(credit_note, on_delete=models.CASCADE,null=True)
+    items = models.CharField(max_length=100,null=True)
+    
+    quantity = models.IntegerField(null=True)
+    price = models.CharField(max_length=100,null=True)
+ 
+    total = models.CharField(max_length=100,null=True)
+
+class debit_note(models.Model):
+    sdebitid = models.AutoField(('cnid'), primary_key=True)
+    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+    debit_no = models.IntegerField(default=1)
+    customer = models.CharField(max_length=100,null=True)
+    debitdate = models.DateField(null=True)
+    ledger_acc=models.CharField(max_length=100,null=True)
+    note=models.CharField(max_length=255,null=True)
+    subtotal = models.CharField(max_length=100,null=True)
+    quantity= models.IntegerField(null=True)
+    grandtotal = models.CharField(max_length=100,null=True)
+    tracking_no=models.CharField(max_length=100,null=True)
+    dis_doc_no= models.CharField(max_length=100,null=True)
+    dis_thr= models.CharField(max_length=100,null=True)
+    destination= models.CharField(max_length=100,null=True)
+    carrie_nmag= models.CharField(max_length=100,null=True)
+    billlr_no= models.CharField(max_length=100,null=True)
+    mt_vh_no= models.CharField(max_length=100,null=True)
+    date= models.DateField(null=True)
+    inv_no= models.CharField(max_length=100,null=True)
+    inv_date= models.DateField(null=True)
+
+    mname =models.CharField(max_length=100,null=True)
+    address =models.CharField(max_length=255,null=True)
+    state =models.CharField(max_length=100,null=True)
+    country =models.CharField(max_length=100,null=True)
+    reg_type =models.CharField(max_length=100,null=True)
+    gst_uin =models.CharField(max_length=100,null=True)
+    pl_suply =models.CharField(max_length=100,null=True)
+    
+class debit_item(models.Model):
+    sdebit = models.ForeignKey(debit_note, on_delete=models.CASCADE,null=True)
+    items = models.CharField(max_length=100,null=True)
+    
+    quantity = models.IntegerField(null=True)
+    price = models.CharField(max_length=100,null=True)
+ 
+    total = models.CharField(max_length=100,null=True)
 
 
 

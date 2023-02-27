@@ -800,5 +800,64 @@ urlpatterns = [
     path('stock_item_vouchers/<pk>/<id>',views.stock_item_vouchers,name='stock_item_vouchers'),
 
 
+
+
+#saiju
+
+#credit section
+    
+    path('credit_notess/',views.credit_notess,name='credit_notess'),
+    path('itemdata/',views.itemdata,name='itemdata'),
+    path('create_credit/',views.create_credit,name='create_credit'), 
+    path('crt_ledg/',views.crt_ledg,name='crt_ledg'),
+    path('create_ledger_crd/',views.create_ledger_crd,name='create_ledger_crd'),
+    path('savrecdet/',views.savrecdet,name='savrecdet'),
+    path('crt_sl_ledg/',views.crt_sl_ledg,name='crt_sl_ledg'),
+    path('create_sl_ledger/',views.create_sl_ledger,name='create_sl_ledger'),
+    path('get_sl_det/',views.get_sl_det,name='get_sl_det'),
+    path('create_items_crd/',views.create_items_crd,name='create_items_crd'),
+    path('stock_items_creation_crd/',views.stock_items_creation_crd,name='stock_items_creation_crd'),
+    path('godown_creation_crd/',views.godown_creation_crd,name='godown_creation_crd'),
+    path('godown_crd/',views.godown_crd,name='godown_crd'), 
+    path('itm_amount/',views.itm_amount,name='itm_amount'),
+    path('saveparty/',views.saveparty,name='saveparty'), 
+
+    # saiju lates
+    path('sv_godown/',views.sv_godown,name='sv_godown'),
+    path('data_fetch/',views.data_fetch,name='data_fetch'),
+    path('qty_add/',views.qty_add,name='qty_add'), 
+    path('sv_godown_itm/',views.sv_godown_itm,name='sv_godown_itm'),
+    path('stock_godowncrd/',views.stock_godowncrd,name='stock_godowncrd'),
+
+    # Debit Note
+
+    path('debits_note/',views.debits_note,name='debits_note'),
+    path('create_debit/',views.create_debit,name='create_debit'),
+    path('crt_ledg_dbt/',views.crt_ledg_dbt,name='crt_ledg_dbt'),
+    path('create_ledger_debt/',views.create_ledger_debt,name='create_ledger_debt'),
+    path('savrecdet_dbt/',views.savrecdet_dbt,name='savrecdet_dbt'), 
+    path('saveparty_dbt/',views.saveparty_dbt,name='saveparty_dbt'),
+    path('crt_dbt_ledg/',views.crt_dbt_ledg,name='crt_dbt_ledg'),
+    path('create_dbt_ledger/',views.create_dbt_ledger,name='create_dbt_ledger'),
+    path('create_items_dbt/',views.create_items_dbt,name='create_items_dbt'),
+    path('stock_items_creation_dbt/',views.stock_items_creation_dbt,name='stock_items_creation_dbt'),
+    path('godown_creation_dbt/',views.godown_creation_dbt,name='godown_creation_dbt'),
+    path('godown_dbt/',views.godown_dbt,name='godown_dbt'), 
+    path('itm_amount_dbt/',views.itm_amount_dbt,name='itm_amount_dbt'),
+    path('sv_godown_dbt/',views.sv_godown_dbt,name='sv_godown_dbt'),
+    path('data_fetch_dbt/',views.data_fetch_dbt,name='data_fetch_dbt'),
+    path('qty_add_dbt/',views.qty_add_dbt,name='qty_add_dbt'), 
+    path('stock_accuracy_dbt/',views.stock_accuracy_dbt,name='stock_accuracy_dbt'),
+
+
+    path('list_deb_voucher/',views.list_deb_voucher,name='list_deb_voucher'),
+    path('list_crd_voucher/',views.list_crd_voucher,name='list_crd_voucher'),
+    path('vouchers_dbt_fr/',views.vouchers_dbt_fr,name='vouchers_dbt_fr'),
+    path('create_voucher_dbt_fr/',views.create_voucher_dbt_fr,name='create_voucher_dbt_fr'),
+    path('vouchers_crd_fr/',views.vouchers_crd_fr,name='vouchers_crd_fr'),
+    path('create_voucher_crd_fr/',views.create_voucher_crd_fr,name='create_voucher_crd_fr'),
+
+
+
  
 ]
