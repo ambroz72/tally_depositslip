@@ -644,11 +644,25 @@ class Particular(models.Model):#ann Particular table
     debit = models.IntegerField(null=True,default=0)#balance of corresponding sales ledger
     journal=models.ForeignKey(Journal,on_delete=models.CASCADE,blank=True,null=True)  
 
+# saiju last Updation
+class CreateGodown(models.Model):
+    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+    name=models.CharField(max_length=100)
+    alias=models.CharField(max_length=100)
+    under_name=models.CharField(max_length=50)
 
-# Niyas
+class Godown_Items(models.Model):
+    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+    name=models.CharField(max_length=100)
+    quantity=models.CharField(max_length=100,null=True)
+    rate=models.CharField(max_length=100,null=True)
+    per=models.CharField(max_length=100,null=True)
+    value=models.CharField(max_length=100,null=True)
+    
 
 class stock_itemcreation(models.Model):
     under=models.ForeignKey(CreateStockGrp,on_delete=models.CASCADE,default=0)
+    godown = models.ForeignKey(Godown_Items, on_delete=models.CASCADE,null=True,blank=True)
     name=models.CharField(max_length=100,null=True)
     alias=models.CharField(max_length=100,null=True)
     units=models.CharField(max_length=100,null=True)
@@ -663,6 +677,24 @@ class stock_itemcreation(models.Model):
     rate=models.CharField(max_length=100,null=True)
     per=models.CharField(max_length=100,null=True)
     value=models.CharField(max_length=100,null=True)
+# Niyas
+
+# class stock_itemcreation(models.Model):
+#     under=models.ForeignKey(CreateStockGrp,on_delete=models.CASCADE,default=0)
+#     name=models.CharField(max_length=100,null=True)
+#     alias=models.CharField(max_length=100,null=True)
+#     units=models.CharField(max_length=100,null=True)
+#     batches=models.CharField(max_length=10,null=True)
+#     trackdate=models.CharField(max_length=10,null=True)
+#     expirydate=models.CharField(max_length=10,null=True)
+#     gst_applicable=models.CharField(max_length=100,null=True)
+#     typ_sply=models.CharField(max_length=100)
+#     set_alter=models.CharField(max_length=100)
+#     rate_of_duty=models.IntegerField()
+#     quantity=models.CharField(max_length=100,null=True)
+#     rate=models.CharField(max_length=100,null=True)
+#     per=models.CharField(max_length=100,null=True)
+#     value=models.CharField(max_length=100,null=True)
 
 class analysis_view(models.Model):
     comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
@@ -692,19 +724,19 @@ class group_ananysis_view(models.Model):
     oeff_rate=models.IntegerField(null=True)
     ovalue=models.IntegerField(null=True)
 
-class CreateGodown(models.Model):
-    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
-    name=models.CharField(max_length=100)
-    alias=models.CharField(max_length=100)
-    under_name=models.CharField(max_length=50)
+# class CreateGodown(models.Model):
+#     comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+#     name=models.CharField(max_length=100)
+#     alias=models.CharField(max_length=100)
+#     under_name=models.CharField(max_length=50)
 
-class Godown_Items(models.Model):
-    comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
-    name=models.CharField(max_length=100)
-    quantity=models.CharField(max_length=100,null=True)
-    rate=models.CharField(max_length=100,null=True)
-    per=models.CharField(max_length=100,null=True)
-    value=models.CharField(max_length=100,null=True)
+# class Godown_Items(models.Model):
+#     comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
+#     name=models.CharField(max_length=100)
+#     quantity=models.CharField(max_length=100,null=True)
+#     rate=models.CharField(max_length=100,null=True)
+#     per=models.CharField(max_length=100,null=True)
+#     value=models.CharField(max_length=100,null=True)
 
 # class CreateGodown(models.Model):
 #     name=models.CharField(max_length=100)
@@ -1721,6 +1753,17 @@ class payment_voucher(models.Model):
     amount = models.IntegerField(null= True)
     narration = models.CharField(max_length=255,null=True)
 
+    
+
+class payment_particulars(models.Model):
+    pay_voucher = models.ForeignKey(payment_voucher,on_delete=models.CASCADE,null=True,blank=True)
+
+    particular_id = models.IntegerField(null= True)
+    particular = models.CharField(max_length = 100,null=True,blank=True)
+    amount =  models.IntegerField(null= True)
+
+
+    
 class receipt_voucher(models.Model):
 
     voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
@@ -1731,8 +1774,21 @@ class receipt_voucher(models.Model):
     amount = models.IntegerField(null= True)
     narration = models.CharField(max_length=255,null=True)
 
+class receipt_particulars(models.Model):
+    rec_voucher = models.ForeignKey(receipt_voucher,on_delete=models.CASCADE,null=True,blank=True)
+
+    particular_id = models.IntegerField(null= True)
+    particular = models.CharField(max_length = 100,null=True,blank=True)
+    amount =  models.IntegerField(null= True)
+
 
 class bank_transcations(models.Model):
+
+
+    pay_voucher = models.IntegerField(null=True,blank=True)
+    rec_voucher = models.IntegerField(null=True,blank=True)
+    pay_particular = models.IntegerField(null=True,blank=True)
+    rec_particular = models.IntegerField(null=True,blank=True)
     bank_account = models.CharField(max_length=255,null=True,blank=True)
     transcation_type = models.CharField(max_length=255,null=True,blank=True)
     instno = models.IntegerField(null=True,blank=True)
@@ -1798,9 +1854,6 @@ class stock_item_voucher(models.Model):
 #saiju
 
 class credit_note(models.Model):
-
-    voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
-
     screditid = models.AutoField(('cnid'), primary_key=True)
     comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
     credit_no = models.IntegerField(default=1)

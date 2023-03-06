@@ -159,7 +159,7 @@
                   <tr  class="p-2">
                     <th colspan="18" style="border-bottom: solid 0.5px rgba(205, 196, 196, 0.2) ; border-right:none ;">
                       <div>
-                      <label style="font-weight:600 ;text-transform:capitalize; font-size: 18px;background-color: rgb(17, 54, 86);" 
+                      <label style="font-weight:600 ;text-transform:capitalize; font-size: 18px;background-color: rgb(17, 54, 86);" id = 'vouchtype'
                       name = 'vouchtype' value = '{{name}}'>&nbsp;&nbsp;&nbsp;&nbsp;{{name}}&nbsp;&nbsp;&nbsp;&nbsp;</label>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <input type="hidden" value="{{name}}" name="type">
@@ -169,7 +169,7 @@
                         <label style="font-weight: 400; color: #000;" name = 'idlbl'>{{v}}</label>
                         <input type="hidden" value="{{v}}" name="idlbl">
                         {% elif vouch.voucherNumber == 'Manual'%}
-                        <input type="number" id = 'vouchNum' style="background-color: rgb(255, 229, 183);height: 20px;" name = 'idlbl'>
+                        <input type="number" id = 'vouchNum' style="background-color: rgb(255, 229, 183);height: 20px; color: #000;" name = 'idlbl'>
                         {% elif vouch.voucherNumber == 'None' %}
                         <input type="hidden" value="" name="idlbl">
 
@@ -221,7 +221,7 @@
                     <tr style="border: none;">
                         
                         <td colspan="18" style="border: none;">
-                            <select id="payacc1"  name="acc1" class=" rows acc payacc mb-2 p-0" style="width: 150px; border-radius: 5px;"
+                            <select id="payacc1"  name="opt[]" class=" rows acc payacc mb-2 p-0" style="width: 150px; border-radius: 5px;"
                                 onchange="changeCurbalance();" >
                                 <option class="opt" id = "opt" >&nbsp;&nbsp;Select Particular </option> 
                                 {% for i in ledg_all %}
@@ -235,7 +235,7 @@
                             
                         </td>
                         <td colspan="2"  class="text-right mt-0" style="border: none; ">
-                            <input type="number" class = 'txt amnt' id= 'amnt1' name = 'amnt' oninput='calculateTotal();' onchange='showTransaction();'>
+                            <input type="number" class = 'txt amnt' id= 'amnt1' name = 'amnt[]' oninput='calculateTotal();' onchange='showTransaction();'>
                             <button type="button" class="butn" id = 'butn1'  onclick="createRow()">
                                 <i class="bi bi-plus-square-fill" style="font-size: 20px;"></i></button>
                         </td>
@@ -262,7 +262,7 @@
               </div>
 
               <div class="enter w-100 py-1 mt-0">
-                <button type="submit" class="btn  w-30" >SAVE</button></div>    
+                <button type="submit" class="btn  w-30" id = 'mainform' >SAVE</button></div>    
           
 
          </form>
@@ -504,20 +504,20 @@
                     <div class="row container m-0 p-0 justify-content-right">
                         <div class="col-5 form-group">
                             <label >A/c No.:</label>
-                            <input type="text" id = 'efaccnum' class="form-control"  style="width: 250px; height: 25px;">
+                            <input type="text" id = 'efaccnum' class="form-control" name="acnum" style="width: 250px; height: 25px;">
                             
                         </div>
                         
                         <div class="col-5 form-group">
                             <label >IFS Code:</label>
-                            <input type="text" id = 'efifs' class="form-control"  style="width: 250px; height: 25px;">
+                            <input type="text" id = 'efifs' class="form-control" name="ifsc" style="width: 250px; height: 25px;">
                             
                         </div>
                     </div>
                     <div class="row container m-0 p-0">
                         <div class="col-5 form-group">
                             <label >Bank Name:</label>
-                            <input type="text" id = 'efbank' class="form-control" style="width: 250px;height: 25px; ">
+                            <input type="text" id = 'efbank' class="form-control" name="bankname" style="width: 250px;height: 25px; ">
                             
                         </div>
                     
@@ -669,7 +669,7 @@ function createRow(){
 
    
     id++;
-    $(".part").append('<tr style="border: none;"><td colspan="18" style="border: none;" class="mt-4"><select id="payacc'+id+'"  name="acc1" class=" rows acc payacc mb-2 p-0" style="width: 150px; border-radius: 5px;" onchange="changeCurbalance();" ><option class="opt" id = "opt" >&nbsp;&nbsp;Select Particular </option>{% for i in ledg_all %}<option class="opt" id = "opt" value="{{i.id}}" >&nbsp;&nbsp;{{i.name}}</option> {% endfor %}</select> <br><label class = "blnc1" style="color: #000;" >&nbsp;&nbsp;Cur Bal:&nbsp;&nbsp;</label><label class = "blnc1" id="blnc'+id+'" class="p-0 mt-0" style="color: #000;"></label><label id ="onacc'+id+'" class="onacc" name = "onacc" style="color: #000; margin-left: 25px;"></label></td><td colspan="2" class="text-right mt-0" style="border: none; "><input type="number" class = "txt amnt" id= "amnt'+id+'" name = "amnt" oninput="calculateTotal();" onchange="showTransaction();"><button type="button" class="butn" id = "butn'+id+'"  onclick="createRow()"><i class="bi bi-plus-square-fill" style="font-size: 20px;"></i></button></td></tr>');
+    $(".part").append('<tr style="border: none;"><td colspan="18" style="border: none;" class="mt-4"><select id="payacc'+id+'"  name="opt[]" class=" rows acc payacc mb-2 p-0" style="width: 150px; border-radius: 5px;" onchange="changeCurbalance();" ><option class="opt" id = "opt" >&nbsp;&nbsp;Select Particular </option>{% for i in ledg_all %}<option class="opt" id = "opt" value="{{i.id}}" >&nbsp;&nbsp;{{i.name}}</option> {% endfor %}</select> <br><label class = "blnc1" style="color: #000;" >&nbsp;&nbsp;Cur Bal:&nbsp;&nbsp;</label><label class = "blnc1" id="blnc'+id+'" class="p-0 mt-0" style="color: #000;"></label><label id ="onacc'+id+'" class="onacc" name = "onacc" style="color: #000; margin-left: 25px;"></label></td><td colspan="2" class="text-right mt-0" style="border: none; "><input type="number" class = "txt amnt" id= "amnt'+id+'" name = "amnt[]" oninput="calculateTotal();" onchange="showTransaction();"><button type="button" class="butn" id = "butn'+id+'"  onclick="createRow()"><i class="bi bi-plus-square-fill" style="font-size: 20px;"></i></button></td></tr>');
 
 
        
@@ -725,6 +725,7 @@ if (val_under === "Bank_Accounts"){
         document.getElementById('onacc'+i).innerHTML = "On Account";
         document.getElementById('onacc'+i).style.display = "block";
         //console.log(value1);
+        part = document.getElementById("payacc" + i).value;
     }
    
 }
@@ -743,6 +744,7 @@ $("#chamnt").html(value1);
 $("#efacc").html(val_name);
 $("#efamt").html(value1);
 $("#efamnt").html(value1);
+$('#partid').val(part);
 
 $("#trlist").click(function(e){
     trvalue= e.target.innerHTML;
@@ -769,10 +771,10 @@ $.ajax({
             $('#chrange').html(chrange);
 
             if(data[2] != 0){
-            cqnumber = '<input type="text" id = "chnumber" class="form-control" name = "instnum" value = "' + data[2]+'" style="width: 250px;height: 25px;">'
+            cqnumber = '<input type="text" id = "chnumber" class="form-control" name = "instnum[]" value = "' + data[2]+'" style="width: 250px;height: 25px;">'
             }
             else{
-                cqnumber = '<input type="text" id = "chnumber" class="form-control" name = "instnum" value = "Cheque Range Exceeded" style="width: 250px;height: 25px;">'
+                cqnumber = '<input type="text" id = "chnumber" class="form-control" name = "instnum[]" value = "Cheque Range Exceeded" style="width: 250px;height: 25px;">'
 
             }
             $('#chnum').html(cqnumber);
@@ -814,6 +816,9 @@ document.getElementById("trs_type").style.display = "none";// close pop up form
 
 //console.log($('#t_type').text());
 
+const vouch_id = $('#idlbl').val();
+const vouchtype = $('#vouchtype').text();
+
 if ($("#t_type").text() === 'Cheque'){
 
     $.ajax({
@@ -821,6 +826,9 @@ if ($("#t_type").text() === 'Cheque'){
                 url:"{% url 'bank_transcation' %}",
             
                 data:{
+                    id : vouch_id, 
+                    vouch_type : vouchtype,
+                    part : $("#partid").value(),
                     bacc : $("#chacc").text(),
                     t_type : $("#t_type").text(),
                     instnum:$("#chnumber").val(),
@@ -851,6 +859,9 @@ else if($("#t_type").text() === 'e-Fund Transfer'){
                 url:"{% url 'bank_transcation' %}",
             
                 data:{
+                    id : vouch_id, 
+                    vouch_type : vouchtype,
+                    part : $("#partid").value(),
                     bacc : $("#efacc").text(),
                     t_type : $("#t_type").text(),
                     instnum:$("#efnum").val(),
@@ -879,6 +890,9 @@ else{
                 url:"{% url 'bank_transcation' %}",
             
                 data:{
+                    id : vouch_id, 
+                    vouch_type : vouchtype,
+                    part : $("#partid").value(),
                     bacc : $("#othacc").text(),
                     t_type : $("#t_type").text(),
                     instnum:$("#instnum").val(),

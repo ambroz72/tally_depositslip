@@ -30,7 +30,7 @@
     <div class="main-panel">
       <div class="content-wrapper">
         <div class="row d-flex" style=" font-weight:600 ; background-color: rgb(124, 186, 224);color: #000;width: 100%;margin: auto;">
-            <div class="col ">Stock Item Monthly Summary</div>
+            <div class="col ">Stock Item Monthly Summary {{cr}}{{vouch_type}} </div>
             <div class="col-4" style="font-weight:600 ;text-transform:capitalize; color: #000;">{{company.name}}</div>
             <div class= 'col-2'><a href="javascript:history.go(-1);">
                 <span class="pull-right clickable" data-effect="fadeOut"><i class="fa fa-times" style="color: black;"></i></span></a>
@@ -45,7 +45,7 @@
                     
                     <th colspan="6" class="text-center text-white " >
                         <h6><i>{{item.name}}</i></h6>
-                        <h6 style="text-transform: capitalize;"><strong> {{company.name}}{{cr}} </strong></h6>
+                        <h6 style="text-transform: capitalize;"><strong> {{company.name}} </strong></h6>
                         <h6>{{beg_date | date:'d-M-Y'}} to {{new_date | date:'d-M-Y'}}</h6>
                     </th>
                 </tr>

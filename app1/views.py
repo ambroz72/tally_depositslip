@@ -1,6 +1,6 @@
 import datetime,calendar
 import random
-import re
+import pandas,numpy
 from tally.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from calendar import month
@@ -10330,7 +10330,7 @@ def edit_gst_details(request,pk):
             gsts.dperiod=request.POST.get('period_report')
             gsts.send_ewaybill=request.POST.get('send_eway_bill')
             gsts.save()
-            print("added")
+            # print("added")
             return render(request,'alter_gst_details.html',{'i':gsts})
         return redirect('/')
 
@@ -11511,7 +11511,7 @@ def list_payment_voucher(request):
 
                 ledger[i].save()
         #print(ledger)
-
+        
         voucher = Voucher.objects.filter(voucher_type = 'Payment')
         context = {
                     'voucher': voucher,
@@ -11531,21 +11531,16 @@ def payment_vouchers(request):
         comp = Companies.objects.get(id = t_id)
         
         name = request.POST.get('ptype')
-        #print(name)
      
         vouch = Voucher.objects.filter(voucher_type = 'Payment').get(voucher_name = name)
 
         ledg_grp_all = tally_ledger.objects.all()
         ledg_grp = tally_ledger.objects.filter(under__in = ['Bank_Accounts','Cash_in_Hand'])
 
-        #for i in range(1,len(ledg_grp_all)):
-
      
-        v  = payment_voucher.objects.values('pid').last()
+        v  = 1 if payment_voucher.objects.values('pid').last() is None else payment_voucher.objects.values('pid').last()['pid']+1
         
-        counter = 1 if v is None else int(v['pid']) + 1
-
-        
+       
         context = {
                     'company' : comp ,
                     'vouch' : vouch,
@@ -11553,7 +11548,7 @@ def payment_vouchers(request):
                     'name':name,
                     'ledg' : ledg_grp,
                     'ledg_all' : ledg_grp_all,
-                    'v' : counter,
+                    'v' : v,
                 }
         return render(request,'payment_voucher.html',context)
 
@@ -11574,16 +11569,37 @@ def create_payment_voucher(request):
 
         if request.method=='POST':
 
-            pid = request.POST['idlbl']
-            acc = request.POST['acc']
+            pid = request.POST.get('idlbl')
+            acc = request.POST.get('acc')
             accnt = acc.split()
             date1 = request.POST.get('date1')
             amount=request.POST.get('total')
             nrt = request.POST.get('narrate')
 
+            particulars_id = request.POST.getlist("opt[]")
+            amounts = request.POST.getlist("amnt[]")
+
             
+
         payment_voucher(pid = pid,account = accnt[1],date = date1 , amount = amount , narration = nrt ,voucher = vouch).save()
 
+        pay_vouch=payment_voucher.objects.get(pid=payment_voucher.objects.all().last().pid)
+        
+        particulars = []
+        for i in particulars_id:
+            id = tally_ledger.objects.get(id = i)
+            particulars.append(id.name)
+
+        if len(particulars_id)==len(amounts) and particulars_id and amounts:
+               
+            particular=zip(particulars,particulars_id,amounts)
+            mapped=list(particular)
+            # print(mapped)
+            for m in mapped:
+
+                payment_particulars.objects.get_or_create(particular =m[0],particular_id =m[1] ,amount = m[2], pay_voucher = pay_vouch)
+        
+        
         
         return redirect('/list_payment_voucher')
         
@@ -11621,20 +11637,14 @@ def receipt_vouchers(request):
 
         comp = Companies.objects.get(id = t_id)
         
-
-        if request.method=="POST":
-            
-            name=request.POST['rtype']
-                       
-
+        name = request.POST.get('rtype')
+     
         vouch = Voucher.objects.filter(voucher_type = 'Receipt').get(voucher_name = name)
 
         ledg_grp_all = tally_ledger.objects.all()
         ledg_grp = tally_ledger.objects.filter(under__in = ['Bank_Accounts','Cash_in_Hand'])
       
-        v  = receipt_voucher.objects.values('rid').last()
-        
-        counter = 1 if v is None else int(v['rid']) + 1
+        v  = 1 if receipt_voucher.objects.values('rid').last() is None else receipt_voucher.objects.values('rid').last()['rid']+1
 
      
         context = {
@@ -11644,7 +11654,7 @@ def receipt_vouchers(request):
                     'name':name,
                     'ledg' : ledg_grp,
                     'ledg_all' : ledg_grp_all,
-                    'v' : counter,
+                    'v' : v,
                   }
         
         return render(request,'receipt_voucher.html',context)
@@ -11661,25 +11671,45 @@ def create_receipt_voucher(request):
         comp = Companies.objects.get(id = t_id)
         
 
-        if request.method=="POST":
-            
-            name=request.POST['type']
+        name=request.POST['type']
                        
 
         vouch = Voucher.objects.filter(voucher_type = 'Receipt').get(voucher_name = name)
 
         if request.method=='POST':
 
-            rid = request.POST['idlbl']
-            acc = request.POST['acc']
+            rid = request.POST.get('idlbl')
+            acc = request.POST.get('acc')
             accnt = acc.split()
             date1 = request.POST.get('date1')
             amount=request.POST.get('total')
-            nrt = request.POST['narrate']
-
-            #account = tally_ledger.objects.values('name').get(id = accnt)
+            nrt = request.POST.get('narrate')
             
-            receipt_voucher(rid = rid,account = accnt[1], date = date1 , amount = amount , narration = nrt ,voucher = vouch).save()
+            particulars_id = request.POST.getlist("opt[]")
+            amounts = request.POST.getlist("amnt[]")
+
+            
+
+            
+        receipt_voucher(rid = rid,account = accnt[1], date = date1 , amount = amount , narration = nrt ,voucher = vouch).save()
+
+        rec_vouch=receipt_voucher.objects.get(rid=receipt_voucher.objects.all().last().rid)
+        
+        particulars = []
+        for i in particulars_id:
+            id = tally_ledger.objects.get(id = i)
+            particulars.append(id.name)
+
+
+        if len(particulars_id)==len(amounts) and particulars_id and amounts:
+               
+            particular=zip(particulars,particulars_id,amounts)
+            mapped=list(particular)
+            for m in mapped:
+                receipt_particulars.objects.get_or_create(particular =m[0],particular_id =m[1] ,amount = m[2], rec_voucher = rec_vouch)
+                
+                
+
 
         return redirect('/list_receipt_voucher')
 
@@ -11832,8 +11862,11 @@ def cheque_range(request):
     return JsonResponse(data,safe=False)
 
 def bank_transcation(request):
-
+    
     if request.method == 'POST':
+        id = request.POST.get('id')
+        vouch_type = request.POST.get('vouch_type')
+        partacc = request.POST.get('part')
         bacc = request.POST.get('bacc')
         t_type = request.POST.get('t_type')
         instno = request.POST.get('instnum')
@@ -11843,9 +11876,15 @@ def bank_transcation(request):
         bname = request.POST.get('efbank')
         amount = request.POST.get('amount')
 
+        
+        # print(partacc)
+        if vouch_type.strip() == 'Payment':
+            bank_transcations(pay_voucher = id, pay_particular = partacc , bank_account = bacc ,transcation_type = t_type,instno = instno,instdate = instdate,
+                                amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
+        else:
 
-        bank_transcations(bank_account = bacc ,transcation_type = t_type,instno = instno,instdate = instdate,
-                          amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
+            bank_transcations(rec_voucher = id, rec_particular = partacc, bank_account = bacc ,transcation_type = t_type,instno = instno,instdate = instdate,
+                                amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
 
         return HttpResponse({"message": "success"})
     
@@ -11929,20 +11968,21 @@ def stock_item_monthly_summary(request,pk):
         comp = Companies.objects.get(id=t_id)
         
         #credit note---
-        vouch_type = Voucher.objects.all()
-
+        vouch_type = Voucher.objects.filter(voucher_type = 'Credit_note')
+        
         for i in vouch_type:
-
             credit = credit_note.objects.filter(voucher_id = i.id)
-        for c in  credit:
-            cr = c.get(screditid = 12)
-            print(cr)
-
+            for c in credit:
+                cr = credit.get(screditid = c.screditid)
+        # print(cr)
             
+            
+
+
         months = fmonths.objects.values()
         item = stock_itemcreation.objects.get(id=pk)
         vouch = stock_item_voucher.objects.filter(item_id = item.id)
-
+        
         beg_date = comp.fin_begin
 
         if vouch.exists():
@@ -11962,15 +12002,15 @@ def stock_item_monthly_summary(request,pk):
             if vouch.exists():
 
                 for v in vouch:
-                    print(v.month_id)
+                    # print(v.month_id)
                     if v.month_id == mnth['id']:
                         
                         in_qty = 0 if v.inwards_qty is None else v.inwards_qty
                         in_val = 0 if v.inwards_val is None else v.inwards_val
                         out_qty = 0 if v.outwards_qty is None else v.outwards_qty
                         out_val = 0 if v.outwards_val is None else v.outwards_val
-                        print(in_val)
-                        print(out_qty)
+                        # print(in_val)
+                        # print(out_qty)
 
                         total_inqty += in_qty
                         total_inval += in_val
@@ -12014,7 +12054,8 @@ def stock_item_monthly_summary(request,pk):
                     'sum_out_val' : sum_out_val,
                     'beg_date' : beg_date,
                     'new_date' : new_date,
-                    'cr' : cr,
+                    'cr' : credit,
+                    'vouch_type':vouch_type,
                     
                 }
 
@@ -12044,7 +12085,7 @@ def stock_item_vouchers(request,pk,id):
         credit = credit_note.objects.filter(voucher_type = 'Credit_Note')
         if credit:
             cr = credit.get(screditid = 12)
-        print(cr)
+        # print(cr)
 
         for v in voucher:
             # if v.Voucher_type == 'Purchase':
@@ -12117,7 +12158,7 @@ def stock_item_vouchers(request,pk,id):
     
         return render(request,'stock_item_vouchers.html',context)
 
-
+# -----stock summary
 
 # Credit Note
 # def credit_note(request):
@@ -12268,18 +12309,19 @@ def savrecdet(request):
             # print("dis_doc_no")
             # print(dis_doc_no)
 
-            pdebit = credit_note(tracking_no=track_no,
-                                        dis_doc_no=dis_doc_no,
-                                        dis_thr=dis_through,
-                                        destination=dis_desti,
-                                        carrie_nmag=car_nm_ag,
-                                        billlr_no=bil_lading,
-                                        mt_vh_no=mvd_no,
-                                        date=date_dis,
-                                        inv_no=inv_no,
-                                        inv_date=inv_date,
-                                        comp=cmp1,
-                                    )
+            pdebit = credit_note(   
+                                    tracking_no=track_no,
+                                    dis_doc_no=dis_doc_no,
+                                    dis_thr=dis_through,
+                                    destination=dis_desti,
+                                    carrie_nmag=car_nm_ag,
+                                    billlr_no=bil_lading,
+                                    mt_vh_no=mvd_no,
+                                    date=date_dis,
+                                    inv_no=inv_no,
+                                    inv_date=inv_date,
+                                    comp=cmp1,
+                                )
             pdebit.save()
         except:
            
@@ -12362,15 +12404,15 @@ def create_credit(request):
             except:
                 notes=''
             
+            idss = credit_note.objects.all().last()
 
             #change
+            
             name = request.POST.get('type')
-            print(name)
-
-            idss = credit_note.objects.all().last()
+            # print(name)
             vouch = Voucher.objects.filter(voucher_type = 'Credit_Note').get(voucher_name = name)
-
-            created = credit_note.objects.filter(screditid=idss.screditid).update(voucher = vouch, customer = request.POST['customer'],creditdate=date.today(),ledger_acc=request.POST['ledger_account'],subtotal=request.POST['subtotal'],note=notes,quantity=request.POST['quantity'],grandtotal=request.POST['grandtotal'],)
+            
+            created = credit_note.objects.filter(screditid=idss.screditid).update(voucher = vouch,customer = request.POST['customer'],creditdate=date.today(),ledger_acc=request.POST['ledger_account'],subtotal=request.POST['subtotal'],note=notes,quantity=request.POST['quantity'],grandtotal=request.POST['grandtotal'],)
 
 
             pdebit=credit_note.objects.get(screditid=idss.screditid)
@@ -12392,14 +12434,9 @@ def create_credit(request):
                     ldg1.opening_blnc_type="Dr"
                 else:
                     ldg1.opening_blnc_type="Cr"
-             
-                
-
+           
             ldg1.save()
-            
-
-            
-
+           
             ldg=tally_ledger.objects.get(company=cmp1,name=pdebit.ledger_acc)
             ldg.opening_blnc=float(ldg.opening_blnc)+float(pdebit.grandtotal)
             ldg.save()
@@ -12410,14 +12447,15 @@ def create_credit(request):
             total = request.POST.getlist("total[]")
 
             pdeb=credit_note.objects.get(screditid=pdebit.screditid)
+            
 
             if len(items)==len(quantity)==len(price)==len(total) and items and quantity and price and total:
                
                 mapped=zip(items,quantity,price,total)
                 mapped=list(mapped)
-                print(mapped)
+                # print(mapped)
                 for ele in mapped:
-                    porderAdd,created = credit_item.objects.get_or_create(items = ele[0],quantity=ele[1],price=ele[2],total=ele[3],scredit=pdeb)
+                    porderAdd,created = credit_item.objects.get_or_create(items = ele[0],quantity=ele[1],price=ele[2],total=ele[3],scredit=pdeb).save()
 
                     # itemqty = stock_itemcreation.objects.get(name=ele[0])
                     # if itemqty.quantity != 0:
@@ -13090,7 +13128,7 @@ def create_debit(request):
                
                 mapped=zip(items,quantity,price,total)
                 mapped=list(mapped)
-                print(mapped)
+                # print(mapped)
                 for ele in mapped:
                     porderAdd,created = debit_item.objects.get_or_create(items = ele[0],quantity=ele[1],price=ele[2],total=ele[3],sdebit=pdeb)
 
@@ -13804,7 +13842,7 @@ def create_voucher_dbt_fr(request):
                         name_class = nc,
                         company_id=t_id)          
             vhr.save()
-            print("Added")
+            # print("Added")
             return redirect('list_deb_voucher')
         return render(request,'vouchers.html',{'tally':tally})
     return redirect('/')
