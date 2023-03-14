@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+    {% block body %}
+    {% load static %}
+    <style>
+        .card {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          max-width: 600px;
+          margin: auto;
+          text-align: right;
+          font-family: arial;
+        }
+        a{
+            margin-right: 10px;
+        }
+        .btns{
+            color: black;
+            text-decoration: none;
+        }
+        .btns_prnt{
+            width: 100%;
+            text-align: end;
+            background-color: rgba(240, 248, 255, 0);
+            border: none;
+            
+        }
+        .btns_prnt:hover{
+            background-color:orange;
+            
+        }
+        .row{
+           
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+            font-family: arial; 
+            color: #fff;
+        }
+    </style> 
+
+    <div class="m-3">
+    <div class="card">
+        <h5 style="background-color:rgb(103, 175, 220) ; color:white; text-align: left; padding: 5px 0; width:100%;">List of Banks</h5>
+            <br>
+            {% for i in bk %}
+            <a href=  "/bank_voucher_details/{{i.id}}"><button  class="btns_prnt" ><h6>{{i.name}}</h6></button></a>
+            {% endfor %}
+
+            <hr>
+        <br>
+        <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+    </div>   
+
+{% endblock %}

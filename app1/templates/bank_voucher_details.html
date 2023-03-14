@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+<style>
+    .close {
+        position: absolute;
+        top: 3px;
+        right: 8px;
+        font-size: 25px;
+        color: rgb(255, 255, 255);
+        transform: rotate(45deg);
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .flexy{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .btns_prnt{
+        width: 100%;
+       
+        background-color: rgba(240, 248, 255, 0);
+        border: none;
+        /* padding: 6px; */
+    
+    }
+    .btns_prnt:hover{
+        background-color:rgb(44, 158, 187);
+        color: rgb(15, 14, 14);
+    }
+
+</style>
+<div class="row container-fluid p-0 mx-0">
+    <div class="col-sm-3 m-0 p-0"></div>
+    <div class="col-sm-6 m-0 p-0" style=" background-color:rgba(0,0,0,0.2);">
+        <!-- <a href="javascript:history.go(-1);" class="close">+</a> -->
+
+        <form method="post" action=" /bank_voucher_details/ {{dp.id}}" enctype="multipart/form-data">
+            {% csrf_token %}
+    <div  class="bg-info text-light " option value="{{ds.id}}">Ledger:{{dl.name}}</option></div>
+    
+
+
+<br>
+
+
+<table class="table table - table-hover text-center  mb-6 w-70" >
+    
+    <tr>
+        <th>Particulars</th>
+        <th>Voucher Type</th> 
+        <th>Instrument No</th>
+        <th>Instrument Date</th>
+        <th>Transaction Type</th>
+        <th>Amount</th>
+    </tr>
+
+    <tbody>
+        {% for j in ins %}
+
+        <tr>
+            <td><a href=  "/bank_voucher_details/{{j.id}}"><br> {{ j.voucher_name }}</br></td>
+             <td><br> {{ j.voucher_type }}</br></td> 
+            <td><br> {{ j.instno }} </br></td>
+            <td><br> {{ j.instdate }}</br></td>
+            <td><br> {{ j.transcation_type }}</br></td>
+            <td><br> {{ j.amount }}.00</br></td>
+            {% endfor %}
+        </tr>
+
+        
+    </tbody>
+</table>
+
+<!-- <h6>&nbsp;&nbsp;Date of last entry</h6> -->
+<hr>           
+        
+</div>
+</div>
+</form>
+{% comment %} <div class="col-sm-4  m-0 p-0"></div> {% endcomment %}
+</div> 
+
+{% endblock %}

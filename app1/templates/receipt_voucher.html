@@ -162,20 +162,21 @@
                       <label style="font-weight:600 ;text-transform:capitalize; font-size: 18px;background-color: rgb(17, 54, 86);" id = 'vouchtype'
                       name = 'vouchtype' value = '{{name}}'>&nbsp;&nbsp;&nbsp;&nbsp;{{name}}&nbsp;&nbsp;&nbsp;&nbsp;</label>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
                       <input type="hidden" value="{{name}}" name="type">
                         <label style="font-weight: 400; color: #000;">No.</label>&nbsp;&nbsp;
 
                         {% if vouch.voucherNumber == 'Automatic' %}
                         <label style="font-weight: 400; color: #000;" name = 'idlbl'>{{v}}</label>
-                        <input type="hidden" value="{{v}}" name="idlbl">
+                        <input type="hidden" value="{{v}}" name="idlbl" id = 'idlbl'>
                         {% elif vouch.voucherNumber == 'Manual'%}
-                        <input type="number" id = 'vouchNum' style="background-color: rgb(255, 229, 183);height: 20px; color: #000;" name = 'idlbl'>
+                        <input type="number" id = 'idlbl' style="background-color: rgb(255, 229, 183);height: 20px; color: #000;" name = 'idlbl'>
                         {% elif vouch.voucherNumber == 'None' %}
-                        <input type="hidden" value="" name="idlbl">
+                        <input type="hidden" value="" name="idlbl" id = 'idlbl'>
 
                         <label name = 'idlbl'></label>
                         {% elif vouch.voucherNumber == 'Automatic(Manual Override)' %}
-                        <input type="number" id = 'vouchNum' style="background-color: rgb(255, 229, 183);height: 20px;">
+                        <input type="number" id = 'idlbl' style="background-color: rgb(255, 229, 183);height: 20px;">
                         {% endif %}
 
                       </div>
@@ -328,7 +329,7 @@
                             </div>
                             <div class="col-3">
                                 <h4 class="text-align-end font-weight-bold">Amount</h4>
-                            
+                                <input type="hidden" id="partid">
                             </div>
                             
                         </div>
@@ -399,7 +400,7 @@
                             </div>
                             <div class="col-3">
                                 <h4 class="text-align-end">Amount</h4>
-                            
+                                <input type="hidden" id="partid">
                             </div>
                             
                         </div>
@@ -481,7 +482,7 @@
                         </div>
                         <div class="col-3">
                             <h4 class="text-align-end">Amount</h4>
-                        
+                            <input type="hidden" id="partid">
                         </div>
                         
                     </div>
@@ -576,7 +577,7 @@ $("#payacc").change(function () {
             curData = '<input id ="led" class= "txt" readonly value = '+ data[0].current_blnc +'> <input id ="ledt" class= "txt" readonly value = '+data[0].current_blnc_type+'>';}
             else{
             curData = '<input id ="led" class= "txt" readonly value = '+ data[0].current_blnc +' style="color: red;"> <input id ="ledt" style="color: red;"  class= "txt" readonly value = '+data[0].current_blnc_type+'>';}
-            console.log(curData);
+            // console.log(curData);
             //var val = data.opening_blnc;
             //console.log(val);
             $("#curbalance").html(curData);
@@ -638,7 +639,7 @@ function createRow(){
             
             success: function (data) {
                 $("#curbalance").html(data);
-                console.log(data);
+                // console.log(data);
             }
             
         });
@@ -689,7 +690,7 @@ function calculateTotal() {
         sum += parseInt(value1.value) ;
     }
   }
-  console.log(sum);
+//   console.log(sum);
   //document.getElementById('total').innerHTML = sum;
   $('#total').val(sum);
 }
@@ -724,8 +725,9 @@ if (val_under === "Bank_Accounts"){
         value1 = document.getElementById("amnt" + i).value;
         document.getElementById('onacc'+i).innerHTML = "On Account";
         document.getElementById('onacc'+i).style.display = "block";
-        //console.log(value1);
+        
         part = document.getElementById("payacc" + i).value;
+        //console.log(part);
     }
    
 }
@@ -745,7 +747,7 @@ $("#efacc").html(val_name);
 $("#efamt").html(value1);
 $("#efamnt").html(value1);
 $('#partid').val(part);
-
+console.log($('#partid').val());
 $("#trlist").click(function(e){
     trvalue= e.target.innerHTML;
     $("#t_type").html(trvalue);
@@ -761,7 +763,7 @@ $.ajax({
                 //csrfmiddlewaretoken: '{{ csrf_token }}'
         },
         success: function (data) {
-            console.log(data)
+            //console.log(data)
             if(data[0] != 0){
                 chrange = '<label>&nbsp;&nbsp;&nbsp;&nbsp;'+data[0]+'</label><label>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</label><label>'+ data[1]+'</label>'
             }
@@ -818,7 +820,9 @@ document.getElementById("trs_type").style.display = "none";// close pop up form
 
 const vouch_id = $('#idlbl').val();
 const vouchtype = $('#vouchtype').text();
-
+console.log(vouch_id);
+console.log(vouchtype);
+console.log($("#partid").val());
 if ($("#t_type").text() === 'Cheque'){
 
     $.ajax({
@@ -828,7 +832,7 @@ if ($("#t_type").text() === 'Cheque'){
                 data:{
                     id : vouch_id, 
                     vouch_type : vouchtype,
-                    part : $("#partid").value(),
+                    part : $("#partid").val(),
                     bacc : $("#chacc").text(),
                     t_type : $("#t_type").text(),
                     instnum:$("#chnumber").val(),
@@ -861,7 +865,7 @@ else if($("#t_type").text() === 'e-Fund Transfer'){
                 data:{
                     id : vouch_id, 
                     vouch_type : vouchtype,
-                    part : $("#partid").value(),
+                    part : $("#partid").val(),
                     bacc : $("#efacc").text(),
                     t_type : $("#t_type").text(),
                     instnum:$("#efnum").val(),
@@ -892,7 +896,7 @@ else{
                 data:{
                     id : vouch_id, 
                     vouch_type : vouchtype,
-                    part : $("#partid").value(),
+                    part : $("#partid").val(),
                     bacc : $("#othacc").text(),
                     t_type : $("#t_type").text(),
                     instnum:$("#instnum").val(),

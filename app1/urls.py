@@ -831,7 +831,7 @@ urlpatterns = [
 
     # Debit Note
 
-    path('debits_note/',views.debits_note,name='debits_note'),
+   path('debits_note/',views.debits_note,name='debits_note'),
     path('create_debit/',views.create_debit,name='create_debit'),
     path('crt_ledg_dbt/',views.crt_ledg_dbt,name='crt_ledg_dbt'),
     path('create_ledger_debt/',views.create_ledger_debt,name='create_ledger_debt'),
@@ -856,8 +856,18 @@ urlpatterns = [
     path('create_voucher_dbt_fr/',views.create_voucher_dbt_fr,name='create_voucher_dbt_fr'),
     path('vouchers_crd_fr/',views.vouchers_crd_fr,name='vouchers_crd_fr'),
     path('create_voucher_crd_fr/',views.create_voucher_crd_fr,name='create_voucher_crd_fr'),
-
-
-
+    
+     
+     #jp--------------contra
+    path('list_contra_voucher',views.list_contra_voucher,name='list_contra_voucher'),
+    path('contra_vouchers',views.contra_vouchers,name='contra_vouchers'),
+    path('create_contra_voucher' , views.create_contra_voucher,name='create_contra_voucher'), 
+    path('contra_cur_balance_change' , views.contra_cur_balance_change,name='contra_cur_balance_change'),       
+    path('ccur_balance_change' , views.ccur_balance_change,name='ccur_balance_change'),    
+    path('under_',views.under_,name="under_"),
  
+            #--Abin-----banking
+   
+    path('deposit_slip',views.deposit_slip,name='deposit_slip'),
+    path('bank_voucher_details/<int:pk>',views.bank_voucher_details,name='bank_voucher_details'),
 ]

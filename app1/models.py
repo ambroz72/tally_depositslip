@@ -1783,8 +1783,8 @@ class receipt_particulars(models.Model):
 
 
 class bank_transcations(models.Model):
-
-
+    
+    voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
     pay_voucher = models.IntegerField(null=True,blank=True)
     rec_voucher = models.IntegerField(null=True,blank=True)
     pay_particular = models.IntegerField(null=True,blank=True)
@@ -1797,6 +1797,20 @@ class bank_transcations(models.Model):
     acnum = models.CharField(max_length=255,null=True,blank=True)
     ifscode = models.CharField(max_length=255,null=True,blank=True)
     bank_name = models.CharField(max_length=255,null=True,blank=True)
+
+# class bank_transcations(models.Model):
+#     pay_voucher = models.IntegerField(null=True,blank=True)
+#     rec_voucher = models.IntegerField(null=True,blank=True)
+#     pay_particular = models.IntegerField(null=True,blank=True)
+#     rec_particular = models.IntegerField(null=True,blank=True)
+#     bank_account = models.CharField(max_length=255,null=True,blank=True)
+#     transcation_type = models.CharField(max_length=255,null=True,blank=True)
+#     instno = models.IntegerField(null=True,blank=True)
+#     instdate = models.DateField(null= True,blank=True)
+#     amount = models.IntegerField(null=True,blank=True)
+#     acnum = models.CharField(max_length=255,null=True,blank=True)
+#     ifscode = models.CharField(max_length=255,null=True,blank=True)
+#     bank_name = models.CharField(max_length=255,null=True,blank=True)
 
 
 #---------------------stock summary------------------
@@ -1854,6 +1868,8 @@ class stock_item_voucher(models.Model):
 #saiju
 
 class credit_note(models.Model):
+    voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
+
     screditid = models.AutoField(('cnid'), primary_key=True)
     comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
     credit_no = models.IntegerField(default=1)
@@ -1893,6 +1909,9 @@ class credit_item(models.Model):
     total = models.CharField(max_length=100,null=True)
 
 class debit_note(models.Model):
+
+    voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
+
     sdebitid = models.AutoField(('cnid'), primary_key=True)
     comp=models.ForeignKey(Companies,on_delete=models.CASCADE)
     debit_no = models.IntegerField(default=1)
