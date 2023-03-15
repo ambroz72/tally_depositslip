@@ -1744,30 +1744,21 @@ class add_voucher3(models.Model):
 #---Nithya----------- payment and receipt vouchers--------
 
 class payment_voucher(models.Model):
-
     voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
-
     pid = models.IntegerField(null=True)
     account = models.CharField(max_length= 255, null=True)
     date = models.DateField(blank = True, null= True)
     amount = models.IntegerField(null= True)
     narration = models.CharField(max_length=255,null=True)
 
-    
-
 class payment_particulars(models.Model):
     pay_voucher = models.ForeignKey(payment_voucher,on_delete=models.CASCADE,null=True,blank=True)
-
     particular_id = models.IntegerField(null= True)
     particular = models.CharField(max_length = 100,null=True,blank=True)
     amount =  models.IntegerField(null= True)
-
-
     
 class receipt_voucher(models.Model):
-
     voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
-
     rid = models.IntegerField(null=True)
     account = models.CharField(max_length= 255, null=True)
     date = models.DateField(blank = True,null= True)
@@ -1776,14 +1767,25 @@ class receipt_voucher(models.Model):
 
 class receipt_particulars(models.Model):
     rec_voucher = models.ForeignKey(receipt_voucher,on_delete=models.CASCADE,null=True,blank=True)
-
     particular_id = models.IntegerField(null= True)
     particular = models.CharField(max_length = 100,null=True,blank=True)
     amount =  models.IntegerField(null= True)
-
-
-class bank_transcations(models.Model):
     
+class contra_voucher(models.Model):
+    voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
+    cid = models.IntegerField(null=True)
+    account = models.CharField(max_length= 255, null=True)
+    date = models.DateField(blank = True,null= True)
+    amount = models.IntegerField(null= True)
+    narration = models.CharField(max_length=255,null=True)   
+    
+class contra_particulars(models.Model):
+    con_voucher = models.ForeignKey(receipt_voucher,on_delete=models.CASCADE,null=True,blank=True)
+    particular_id = models.IntegerField(null= True)
+    particular = models.CharField(max_length = 100,null=True,blank=True)
+    amount =  models.IntegerField(null= True)
+    
+class bank_transcations(models.Model):
     voucher = models.ForeignKey(Voucher,on_delete=models.CASCADE,null=True,blank=True)
     pay_voucher = models.IntegerField(null=True,blank=True)
     rec_voucher = models.IntegerField(null=True,blank=True)

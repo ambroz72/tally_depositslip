@@ -870,4 +870,5 @@ urlpatterns = [
    
     path('deposit_slip',views.deposit_slip,name='deposit_slip'),
     path('bank_voucher_details/<int:pk>',views.bank_voucher_details,name='bank_voucher_details'),
+    path('bank_voucher_details2/<int:pd>',views.bank_voucher_details2,name='bank_voucher_details2'),
 ]
