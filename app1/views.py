@@ -11808,7 +11808,6 @@ def cheque_range(request):
 
 
 def bank_transcation(request):
-    
     if request.method == 'POST':
         id = request.POST.get('id')
         vouch_name = request.POST.get('vouch_type')
@@ -11822,7 +11821,7 @@ def bank_transcation(request):
         bname = request.POST.get('efbank')
         amount = request.POST.get('amount')
 
-        vouch_type = Voucher.objects.get(voucher_name = vouch_name.strip())
+        vouch_type = Voucher.objects.get(voucher_name = vouch_name)
 
         if vouch_type.voucher_type == 'Payment':
             bank_transcations(voucher = vouch_type, pay_voucher = id, pay_particular = partacc , bank_account = bacc ,
@@ -11834,14 +11833,15 @@ def bank_transcation(request):
                                 amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
             
         elif vouch_type.voucher_type == 'contra':
-                    bank_transcations(voucher = vouch_type,bank_account = bacc ,transcation_type = t_type,instno = instno,instdate = instdate,
+                    bank_transcations(voucher = vouch_type,rec_voucher = id,rec_particular = partacc,bank_account = bacc ,
+                                transcation_type = t_type,instno = instno,instdate = instdate,
                           amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
 
+        print('voucher_name')
 
         return HttpResponse({"message": "success"})
 
 # def bank_transcation(request):
-    
 #     if request.method == 'POST':
 #         id = request.POST.get('id')
 #         vouch_name = request.POST.get('vouch_type')
@@ -11854,17 +11854,13 @@ def bank_transcation(request):
 #         ifsc = request.POST.get('efifs')
 #         bname = request.POST.get('efbank')
 #         amount = request.POST.get('amount')
-
 #         vouch_type = Voucher.objects.get(voucher_name = vouch_name.strip()).voucher_type
-
 #         if vouch_type == 'Payment':
 #             bank_transcations(pay_voucher = id, pay_particular = partacc , bank_account = bacc ,transcation_type = t_type,instno = instno,instdate = instdate,
 #                                 amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
 #         elif vouch_type == 'Receipt':
-
 #             bank_transcations(rec_voucher = id, rec_particular = partacc, bank_account = bacc ,transcation_type = t_type,instno = instno,instdate = instdate,
 #                                 amount = amount,acnum = acnum,ifscode = ifsc, bank_name = bname).save()
-
 #         return HttpResponse({"message": "success"})
     
 
@@ -11955,9 +11951,6 @@ def stock_item_monthly_summary(request,pk):
                 cr = credit.get(screditid = c.screditid)
         # print(cr)
             
-            
-
-
         months = fmonths.objects.values()
         item = stock_itemcreation.objects.get(id=pk)
         vouch = stock_item_voucher.objects.filter(item_id = item.id)
@@ -13952,11 +13945,14 @@ def list_contra_voucher(request):
             if ledger[i].current_blnc is None:
                 ledger[i].current_blnc = ledger[i].opening_blnc
                 ledger[i].current_blnc_type = ledger[i].opening_blnc_type
+
                 ledger[i].save()
         #print(ledger)
+
         voucher = Voucher.objects.filter(voucher_type = 'contra')
         context = {
                     'voucher': voucher,
+
                 }
         return render(request,'list_contra_type.html',context)
 
@@ -13967,13 +13963,18 @@ def contra_vouchers(request):
             t_id = request.session['t_id']
         else:
             return redirect('/')
+
         
         name = request.POST.get('ctype')
+     
         vouch = Voucher.objects.filter(voucher_type = 'contra').get(voucher_name = name)
+
         cmp = Companies.objects.get(id=t_id)
         ledg_grp = tally_ledger.objects.filter(under__in = ['Bank_Accounts','Cash_in_Hand'],company_id=cmp)
+
         #for i in range(1,len(ledg_grp_all)):
         v=contra_voucher.objects.aggregate(Max('cid'))
+
         counter = 1 if v['cid__max'] is None else int(v['cid__max']) + 1
         context = {
                     'company' : cmp ,
@@ -13985,54 +13986,37 @@ def contra_vouchers(request):
                 }
         return render(request,'contra_voucher.html',context)
 
-# def create_contra_voucher(request):
-#     if 't_id' in request.session:
-#         if request.session.has_key('t_id'):
-#             t_id = request.session['t_id']
-#         else:
-#             return redirect('/')
-#         comp = Companies.objects.get(id = t_id)
-#         name=request.POST.get('type')              
-#         vouch = Voucher.objects.filter(voucher_type = 'contra').get(voucher_name = name)
-#         if request.method=='POST':
-#             cid = request.POST.get('idlbl')
-#             acc = request.POST.get('acc')
-#             date1 = request.POST.get('date1')
-#             amount=request.POST.get('total')
-#             nrt = request.POST.get('narrate')
-#         contra_voucher(cid = cid,account = acc,date = date1 , amount = amount , narration = nrt ,voucher = vouch).save()
-#         return redirect('/list_contra_voucher')
-
 def create_contra_voucher(request):
     if 't_id' in request.session:
         if request.session.has_key('t_id'):
             t_id = request.session['t_id']
         else:
             return redirect('/')
+
         comp = Companies.objects.get(id = t_id)
-        name=request.POST.get('type')              
+        
+
+        name=request.POST.get('type')
+     
+        
+        
+                             
         vouch = Voucher.objects.filter(voucher_type = 'contra').get(voucher_name = name)
+       
         if request.method=='POST':
             cid = request.POST.get('idlbl')
             acc = request.POST.get('acc')
-            accnt = acc.split()
             date1 = request.POST.get('date1')
             amount=request.POST.get('total')
             nrt = request.POST.get('narrate')
-            particulars_id = request.POST.getlist("opt[]")
-            amounts = request.POST.getlist("amnt[]")
-        contra_voucher(cid = cid,account = accnt[0] ,date = date1 , amount = amount , narration = nrt ,voucher = vouch).save()
-        con_vouch=contra_voucher.objects.get(cid=contra_voucher.objects.all().last().cid)
-        particulars = []
-        for i in particulars_id:
-            id = tally_ledger.objects.get(id = i)
-            particulars.append(id.name)
+           
+            
+           
 
-        if len(particulars_id)==len(amounts) and particulars_id and amounts:
-            particular=zip(particulars,particulars_id,amounts)
-            mapped=list(particular)
-            for m in mapped:
-                contra_particulars.objects.get_or_create(particular =m[0],particular_id =m[1] ,amount = m[2], con_voucher = con_vouch)
+            
+        contra_voucher(cid = cid,account = acc,date = date1 , amount = amount , narration = nrt ,voucher = vouch).save()
+
+        
         return redirect('/list_contra_voucher')
     
 def contra_cur_balance_change(request):
@@ -14059,12 +14043,19 @@ def contra_cur_balance_change(request):
             cur_type = 'Dr'
             val = v1
 
+    
     ledger = tally_ledger.objects.get(name = name)
+
+
+
     ledger.current_blnc = val
     ledger.current_blnc_type = cur_type
     ledger.save()
+   
     #print(ledger)
+    
     context = {'val' : val,'cur_type': cur_type, 'ledger' : ledger }
+    
     return render(request,'curbalance_change.html', context)
         
 def ccur_balance_change(request):
@@ -14073,6 +14064,8 @@ def ccur_balance_change(request):
     j = request.GET.get('amount')
     type = request.GET.get('curblnct')
     
+
+   
     if type == 'Cr':
         v2 = int(i)+int(j)
         val = v2
@@ -14091,6 +14084,7 @@ def ccur_balance_change(request):
     ledger.current_blnc_type = cur_type
     ledger.save()
     under=ledger.under
+  
     return render(request,'contra_curbalance_change.html', {'val' : val,'cur_type': cur_type, 'ledger' : ledger })
 
 def under_(request):
@@ -14099,12 +14093,14 @@ def under_(request):
     data = list(ledger)
     return JsonResponse(data, safe = False)
 
+
+        
+
     #---Abin-------------- list if banks------------------------------
 def deposit_slip(request):
         dp=tally_ledger.objects.all()
         bk=tally_ledger.objects.filter(under='Bank_Accounts')
         return render(request,'deposit_slip.html',{'dp':dp,'bk':bk})
-
 
 def bank_voucher_details(request,pk):
     
@@ -14125,7 +14121,6 @@ def bank_voucher_details(request,pk):
         i['voucher_name'] = Voucher.objects.get(id = i['voucher_id']).voucher_name
         i['voucher_type'] = Voucher.objects.get(id = i['voucher_id']).voucher_type
         n +=1
-        
     return render(request,'bank_voucher_details.html',{'ds':ds,'ins':ins ,'re': re,'dl':dl})
 
 def bank_voucher_details2(request,pd):
